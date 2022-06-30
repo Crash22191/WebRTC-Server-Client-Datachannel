@@ -86,10 +86,14 @@ module.exports.RTCClient1 = class RTCClient1 {
         });
       };
       
-      async openChannel() {
-        const offer = await initializePeerConnection();  
+      async openChannel() { 
+        console.log("open channel call")
+        const offer = await initializePeerConnection();   
+        console.log("generated offer ")
+        console.log(offer)
         let rsp = null;
-        try {
+        try { 
+            console.log("make connect request")
             rsp = await sendQuery( serverUrl + '/connect&stream='+ this.capId, offer );
             console.log( rsp );  
         } catch( error ) {
@@ -97,8 +101,8 @@ module.exports.RTCClient1 = class RTCClient1 {
         }   
           if(rsp !== null && rsp.code == 200 && rsp.answer){ 
             try { 
-                await pc.setLocalDescription(offer); 
-                await pc.setRemoteDescription(rsp.answer);
+                await this.pc.setLocalDescription(offer); 
+                await this.pc.setRemoteDescription(rsp.answer);
             }
             catch( error ) { 
                 console.log(error)
@@ -110,6 +114,8 @@ module.exports.RTCClient1 = class RTCClient1 {
         return
       }
       async initializePeerConnection() {
+        console.log("initializePeerConnection()")
+
         // const config = { iceServers: [{ urls: [ 'stun:stun1.l.google.com:19302' ] } ] };
         this.pc = new RTCPeerConnection(this.config);
       
