@@ -23,7 +23,7 @@ async function ClientRecieveOffer(pc, ws) {
 /**
  * Creates the client side.
  */
-module.exports.RTCClient1 = class RtcpcClient1 {
+module.exports.RTCClient1 = class RTCClient1 {
     /**
      * Creates the client side.
      * @param {RTCConfiguration} config
