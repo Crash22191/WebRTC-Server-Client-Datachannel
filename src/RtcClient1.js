@@ -4,7 +4,7 @@ const {
     RTCSessionDescription,
     RTCPeerConnection
   } = require('wrtc'); 
-  const axios = require('axios');
+  const axios = require('axios').default;
 
 /**
  * Creates the client side.
@@ -43,9 +43,14 @@ module.exports.RTCClient1 = class RTCClient1 {
     /**
      * Waits for server to send candidate, handshakes, and awaits all datachannels to become active.
      */
-    async  sendQuery( url, body ) {
+    async sendQuery( url, body ) {
         let bodyJson = JSON.stringify( body )
-        return await axios.post(url, bodyJson)
+        return await axios({
+            url: url,
+            type: 'POST',
+            dataType: 'json',
+            data: bodyJson
+        })
       };
       
       async openChannel() { 
@@ -56,7 +61,7 @@ module.exports.RTCClient1 = class RTCClient1 {
         let rsp = null;
         try { 
             console.log("make connect request")
-            rsp = await this.sendQuery( this.serverUrl + '/connect&stream='+ this.capId, offer );
+            rsp = await this.sendQuery(( this.serverUrl + '/connect&stream='+ this.capId), offer );
             console.log( rsp );  
         } catch( error ) {
             console.log( error );
