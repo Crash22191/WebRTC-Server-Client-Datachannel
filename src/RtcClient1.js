@@ -126,15 +126,21 @@ module.exports.RTCClient1 = class RTCClient1 {
             //fired after description has been set 
             if (candidate) {  
                 try{
-                    const rsp = await sendQuery( serverUrl + '/ice?stream='+ this.capId, offer );
+                   sendQuery( serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
+
                     if(rsp !== null && rsp.code == 200 && rsp.candidate){  
                         console.log("got a candidate");
                         if (!this.pc.remoteDescription) {
                             this.queuedCandidates.push(candidate);
                             return;
                         }
-                        await this.pc.addIceCandidate(candidate);               
+                        this.pc.addIceCandidate(candidate);               
                     }
+                    }).catch((e)=>{ 
+                        console.log('error sending query')
+                        console.log(e)
+                    })
+
                 }catch(error){
                     console.log('error setting ice candidate')
                     console.log(error)
