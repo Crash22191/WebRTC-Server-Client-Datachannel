@@ -55,29 +55,34 @@ module.exports.RTCClient1 = class RTCClient1 {
       
       async openChannel() { 
         console.log("open channel call")
-        const offer = await this.initializePeerConnection();   
-        console.log("generated offer ")
-        console.log(offer)
-        let rsp = null;
-        try { 
-            console.log("make connect request")
-            rsp = await this.sendQuery(( this.serverUrl + '/connect&stream='+ this.capId), offer );
-            console.log( rsp );  
-        } catch( error ) {
-            console.log( error );
-        }   
-          if(rsp !== null && rsp.code == 200 && rsp.answer){ 
-            try { 
-                await this.pc.setLocalDescription(new RTCSessionDescription(offer)); 
-                await this.pc.setRemoteDescription(rsp.answer);
-            }
-            catch( error ) { 
-                console.log(error)
-            }            
-        }
-        else{
-            console.log()
-        }
+        const offer = await this.initializePeerConnection();    
+        console.log("set description 1 ")
+        await this.pc.setLocalDescription(new RTCSessionDescription(offer)); 
+        console.log(this.pc.localDescription) 
+        console.log("set description 2 ")
+        await this.pc.setLocalDescription(offer); 
+        console.log(this.pc.localDescription)
+        // console.log("generated offer ")
+        // console.log(offer)
+        // let rsp = null;
+        // try { 
+        //     console.log("make connect request")
+        //     rsp = await this.sendQuery(( this.serverUrl + '/connect&stream='+ this.capId), offer );
+        //     console.log( rsp );  
+        // } catch( error ) {
+        //     console.log( error );
+        // }   
+        //   if(rsp !== null && rsp.code == 200 && rsp.answer){ 
+        //     try { 
+        //         await this.pc.setRemoteDescription(rsp.answer);
+        //     }
+        //     catch( error ) { 
+        //         console.log(error)
+        //     }            
+        // }
+        // else{
+        //     console.log()
+        // }
         return
       }
       async initializePeerConnection() {
@@ -93,7 +98,8 @@ module.exports.RTCClient1 = class RTCClient1 {
         };
         const offer = await this.pc.createOffer( options );
       
-        this.pc.onicecandidate = ({ candidate }) => {  
+        this.pc.onicecandidate = ({ candidate }) => {   
+            console.log("received ice candidate")
             console.log(this.pc.onicecandidate)
             //fired after description has been set 
             if (candidate) {  
