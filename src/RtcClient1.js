@@ -30,12 +30,13 @@ module.exports.RTCClient1 = class RTCClient1 {
      * @param {[config]} datachannels
      */
     constructor(url, config, datachannels, capId) { 
+        console.log("rtc client 1 constructor start")
         this.capId = capId;
         this.serverUrl = url;
         this.config = config; 
         this.datachannels = datachannels; 
         this.queuedCandidates = [];
-        this.pc = null; 
+        this.pc = new RTCPeerConnection(this.config);
         this.openPromises = [];
         this.datachannels.forEach(element => {
             id++;
@@ -51,31 +52,12 @@ module.exports.RTCClient1 = class RTCClient1 {
             this[element.label] = this.pc.createDataChannel(element.label, element.config);
             this[element.label].onopen = element.onOpenResolve;
           });
-
+          console.log("rtc client 1 constructor end")
     }
 
     /**
      * Waits for server to send candidate, handshakes, and awaits all datachannels to become active.
      */
-    async create() {
-        // onCandidate(this.ws, async candidate => {
-        //     console.log("got a candidate");
-        //     if (!this.pc.remoteDescription) {
-        //         this.queuedCandidates.push(candidate);
-        //         return;
-        //     }
-        //     await this.pc.addIceCandidate(candidate);
-        // }
-        // ); 
-
-        await this.openChannel()
-        await Promise.all(this.queuedCandidates.splice(0).map(async candidate => {
-            console.log("resolving candidates");
-            await this.pc.addIceCandidate(candidate);
-        }));
-        await Promise.all(this.openPromises);
-        console.log("Datachannels opened");
-    }  
     async  sendQuery( url, body ) {
         let bodyJson = JSON.stringify( body )
         return await $.ajax({
@@ -117,7 +99,6 @@ module.exports.RTCClient1 = class RTCClient1 {
         console.log("initializePeerConnection()")
 
         // const config = { iceServers: [{ urls: [ 'stun:stun1.l.google.com:19302' ] } ] };
-        this.pc = new RTCPeerConnection(this.config);
       
         const options = {
           offerToReceiveAudio: 0,
