@@ -50,5 +50,5 @@ module.exports.RTCClient = class RtcpcClient extends Rtcpc {
         }));
         await Promise.all(this.openPromises);
         console.log("Datachannels opened");
-    }
+    } 
 }
