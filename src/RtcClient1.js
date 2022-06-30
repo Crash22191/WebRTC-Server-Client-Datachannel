@@ -56,10 +56,10 @@ module.exports.RTCClient1 = class RTCClient1 {
       async openChannel() { 
         console.log("open channel call")
         const offer = await this.initializePeerConnection();    
-        console.log("set description 1 ")
-        await this.pc.setLocalDescription(new RTCSessionDescription(offer)); 
-        console.log(this.pc.localDescription) 
-        console.log("set description 2 ")
+        // console.log("set description 1 ")
+        // await this.pc.setLocalDescription(new RTCSessionDescription(offer)); 
+        // console.log(this.pc.localDescription) 
+        // console.log("set description 2 ")
         await this.pc.setLocalDescription(offer); 
         console.log(this.pc.localDescription)
         // console.log("generated offer ")
