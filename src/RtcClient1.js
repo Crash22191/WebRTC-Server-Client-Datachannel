@@ -30,14 +30,17 @@ module.exports.RTCClient1 = class RTCClient1 {
      * @param {[config]} datachannels
      */
     constructor(url, config, datachannels, capId) { 
-        console.log("rtc client 1 constructor start")
+        console.log("rtc client 1 constructor start 1")
         this.capId = capId;
         this.serverUrl = url;
         this.config = config; 
         this.datachannels = datachannels; 
-        this.queuedCandidates = [];
+        this.queuedCandidates = []; 
+        console.log("rtc client 1 constructor start 2")
         this.pc = new RTCPeerConnection(this.config);
-        this.openPromises = [];
+        this.openPromises = []; 
+        console.log("rtc client 1 constructor start 3") 
+        let id=0;
         this.datachannels.forEach(element => {
             id++;
             element.config.id=id;
@@ -83,7 +86,7 @@ module.exports.RTCClient1 = class RTCClient1 {
         }   
           if(rsp !== null && rsp.code == 200 && rsp.answer){ 
             try { 
-                await this.pc.setLocalDescription(offer); 
+                await this.pc.setLocalDescription(new RTCSessionDescription(offer)); 
                 await this.pc.setRemoteDescription(rsp.answer);
             }
             catch( error ) { 
