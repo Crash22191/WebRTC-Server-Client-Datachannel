@@ -16,16 +16,13 @@ module.exports.RTCClient1 = class RTCClient1 {
      * @param {[config]} datachannels
      */
     constructor(url, config, datachannels, capId) { 
-        console.log("rtc client 1 constructor start 1")
         this.capId = capId;
         this.serverUrl = url;
         this.config = config; 
         this.datachannels = datachannels; 
         this.queuedCandidates = []; 
-        console.log("rtc client 1 constructor start 2")
         this.pc = new RTCPeerConnection(this.config);
         this.openPromises = []; 
-        console.log("rtc client 1 constructor start 3") 
         let id=0;
         this.datachannels.forEach(element => {
             id++;
@@ -41,7 +38,6 @@ module.exports.RTCClient1 = class RTCClient1 {
             this[element.label] = this.pc.createDataChannel(element.label, element.config);
             this[element.label].onopen = element.onOpenResolve;
           });
-          console.log("rtc client 1 constructor end")
     }
 
     /**
@@ -60,7 +56,7 @@ module.exports.RTCClient1 = class RTCClient1 {
         let rsp = null;
         try { 
             console.log("make connect request")
-            rsp = await this.sendQuery( serverUrl + '/connect&stream='+ this.capId, offer );
+            rsp = await this.sendQuery( this.serverUrl + '/connect&stream='+ this.capId, offer );
             console.log( rsp );  
         } catch( error ) {
             console.log( error );
@@ -97,7 +93,7 @@ module.exports.RTCClient1 = class RTCClient1 {
             //fired after description has been set 
             if (candidate) {  
                 try{
-                   this.sendQuery( serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
+                   this.sendQuery( this.serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
 
                     if(rsp !== null && rsp.code == 200 && rsp.candidate){  
                         console.log("got a candidate");
