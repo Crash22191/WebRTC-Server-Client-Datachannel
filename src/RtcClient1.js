@@ -4,21 +4,7 @@ const {
     RTCSessionDescription,
     RTCPeerConnection
   } = require('wrtc'); 
-async function ClientRecieveOffer(pc, ws) {
-    try {
-        console.log("waiting for offer");
-        const offer = await getOffer(ws);
-        console.log("recieved offer");
-        await pc.setRemoteDescription(offer);
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        await ws.send(JSON.stringify(answer));
-        console.log("sendt reply");
-    } catch (error) {
-        console.error(error.stack || error.message || error);
-        ws.close();
-    }
-}
+  const axios = require('axios');
 
 /**
  * Creates the client side.
@@ -63,23 +49,18 @@ module.exports.RTCClient1 = class RTCClient1 {
      */
     async  sendQuery( url, body ) {
         let bodyJson = JSON.stringify( body )
-        return await $.ajax({
-          url: url,
-          type: 'POST',
-          dataType: 'json',
-          data: bodyJson
-        });
+        return await axios.post(url, bodyJson)
       };
       
       async openChannel() { 
         console.log("open channel call")
-        const offer = await initializePeerConnection();   
+        const offer = await this.initializePeerConnection();   
         console.log("generated offer ")
         console.log(offer)
         let rsp = null;
         try { 
             console.log("make connect request")
-            rsp = await sendQuery( serverUrl + '/connect&stream='+ this.capId, offer );
+            rsp = await this.sendQuery( serverUrl + '/connect&stream='+ this.capId, offer );
             console.log( rsp );  
         } catch( error ) {
             console.log( error );
@@ -116,7 +97,7 @@ module.exports.RTCClient1 = class RTCClient1 {
             //fired after description has been set 
             if (candidate) {  
                 try{
-                   sendQuery( serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
+                   this.sendQuery( serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
 
                     if(rsp !== null && rsp.code == 200 && rsp.candidate){  
                         console.log("got a candidate");
