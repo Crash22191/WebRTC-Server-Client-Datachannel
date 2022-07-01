@@ -97,18 +97,16 @@ module.exports.RTCClient1 = class RTCClient1 {
         };
         // const offer = await this.pc.createOffer( options );
        
-        this.pc.createOffer(options).then(sdp =>  this.pc.setLocalDescription(sdp)).then(() => {
+        this.pc.createOffer(options).then(sdp => this.pc.setLocalDescription(sdp)).then(() => {
       
             console.log("set local description done sdp var")
             let sdpVariable = this.pc.localDescription.sdp;
             console.log(sdpVariable)
-            console.log("sdp ice candidate")
-            console.log(this.pc.onicecandidate)
         });
 
         this.pc.onicecandidate = ({ candidate }) => {   
             console.log("received ice candidate")
-            console.log(this.pc.onicecandidate)
+            console.log(candidate)
             //fired after description has been set 
             // if (candidate) {  
             //     try{
