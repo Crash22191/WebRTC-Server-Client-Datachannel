@@ -1,4 +1,3 @@
-const { getOffer, onCandidate, Rtcpc } = require("./common");
 const {
     RTCIceCandidate,
     RTCSessionDescription,
@@ -96,36 +95,44 @@ module.exports.RTCClient1 = class RTCClient1 {
           iceRestart: 0,
           voiceActivityDetection: 0
         };
-        const offer = await this.pc.createOffer( options );
+        // const offer = await this.pc.createOffer( options );
+       
+        this.pc.createOffer(options).then(sdp =>  this.pc.setLocalDescription(sdp)).then(() => {
       
+            console.log("set local description done sdp var")
+            let sdpVariable = peerConnection.localDescription.sdp;
+            console.log(sdpVariable)
+            
+        });
+
         this.pc.onicecandidate = ({ candidate }) => {   
             console.log("received ice candidate")
             console.log(this.pc.onicecandidate)
             //fired after description has been set 
-            if (candidate) {  
-                try{
-                   this.sendQuery( this.serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
+            // if (candidate) {  
+            //     try{
+            //        this.sendQuery( this.serverUrl + '/ice?stream='+ this.capId, offer ).then((rsp)=>{
 
-                    if(rsp !== null && rsp.code == 200 && rsp.candidate){  
-                        console.log("got a candidate");
-                        if (!this.pc.remoteDescription) {
-                            this.queuedCandidates.push(candidate);
-                            return;
-                        }
-                        this.pc.addIceCandidate(candidate);               
-                    }
-                    }).catch((e)=>{ 
-                        console.log('error sending query')
-                        console.log(e)
-                    })
+            //         if(rsp !== null && rsp.code == 200 && rsp.candidate){  
+            //             console.log("got a candidate");
+            //             if (!this.pc.remoteDescription) {
+            //                 this.queuedCandidates.push(candidate);
+            //                 return;
+            //             }
+            //             this.pc.addIceCandidate(candidate);               
+            //         }
+            //         }).catch((e)=>{ 
+            //             console.log('error sending query')
+            //             console.log(e)
+            //         })
 
-                }catch(error){
-                    console.log('error setting ice candidate')
-                    console.log(error)
-                }
-            }else{
-                console.log("onicecandidate empty")
-            }
+            //     }catch(error){
+            //         console.log('error setting ice candidate')
+            //         console.log(error)
+            //     }
+            // }else{
+            //     console.log("onicecandidate empty")
+            // }
           };
       
         this.pc.oniceconnectionstatechange = () => {
