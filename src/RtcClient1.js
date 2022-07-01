@@ -102,7 +102,8 @@ module.exports.RTCClient1 = class RTCClient1 {
             console.log("set local description done sdp var")
             let sdpVariable = this.pc.localDescription.sdp;
             console.log(sdpVariable)
-            
+            console.log("sdp ice candidate")
+            console.log(this.pc.onicecandidate)
         });
 
         this.pc.onicecandidate = ({ candidate }) => {   
