@@ -100,7 +100,7 @@ module.exports.RTCClient1 = class RTCClient1 {
         this.pc.createOffer(options).then(sdp =>  this.pc.setLocalDescription(sdp)).then(() => {
       
             console.log("set local description done sdp var")
-            let sdpVariable = peerConnection.localDescription.sdp;
+            let sdpVariable = this.pc.localDescription.sdp;
             console.log(sdpVariable)
             
         });
